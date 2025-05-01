@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Learning Site</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f8f8;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: #000;
+      color: #FFA500;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5em;
+    }
+
+    header h2 {
+      margin: 5px 0 0;
+      font-size: 1.3em;
+      color: #fff;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding: 40px 20px;
+    }
+
+    .tool-button {
+      background-color: #FFA500;
+      color: black;
+      border: none;
+      border-radius: 12px;
+      padding: 30px;
+      width: 200px;
+      height: 120px;
+      font-size: 1.2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    .tool-button:hover {
+      transform: scale(1.05);
+    }
+
+    .tool-icon {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      background-color: #000;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+    }
+
+    footer input, footer button {
+      font-size: 1em;
+      padding: 10px 15px;
+      margin: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    footer button {
+      background-color: #FFA500;
+      color: black;
+      border: none;
+      cursor: pointer;
+    }
+
+    footer button:hover {
+      background-color: #e69500;
+    }
+
+    @media (max-width: 600px) {
+      .tool-button {
+        width: 90%;
+      }
+    }
+
+    /* Login overlay styles */
+    #loginOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      flex-direction: column;
+      color: #FFA500;
+    }
+
+    #loginOverlay input {
+      padding: 10px;
+      font-size: 1.2em;
+      margin-bottom: 10px;
+      border: none;
+      border-radius: 6px;
+    }
+
+    #loginOverlay button {
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #FFA500;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: black;
+    }
+
+    #loginOverlay p {
+      margin-bottom: 15px;
+      font-size: 1.2em;
+    }
+
+    /* Signature text in bottom-right corner */
+    #signature {
+      position: fixed;
+      bottom: 5px;
+      right: 10px;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.7); /* Brighter color for better visibility */
+      pointer-events: none;
+      user-select: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Login Overlay -->
+  <div id="loginOverlay">
+    <p>Please enter password to access the Learning Site:</p>
+    <input type="password" id="passwordInput" placeholder="Enter password">
+    <br>
+    <button onclick="checkPassword()">Enter</button>
+  </div>
+
+  <header>
+    <h1>Fairfield Middle School</h1>
+    <h2>📚 Learning Site Dashboard</h2>
+  </header>
+
+  <main>
+    <button class="tool-button" onclick="fakeFeature('Math Quizzes')">
+      <div class="tool-icon">➕</div>
+      Math Quizzes
+    </button>
+
+    <button class="tool-button" onclick="fakeFeature('Practice Tests')">
+      <div class="tool-icon">📝</div>
+      Practice Tests
+    </button>
+
+    <button class="tool-button" onclick="fakeFeature('Science Worksheets')">
+      <div class="tool-icon">🔬</div>
+      Science Worksheets
+    </button>
+
+    <button class="tool-button" onclick="fakeFeature('Reading Practice')">
+      <div class="tool-icon">📖</div>
+      Reading Practice
+    </button>
+
+    <button class="tool-button" onclick="fakeFeature('Typing Trainer')">
+      <div class="tool-icon">⌨️</div>
+      Typing Trainer
+    </button>
+
+    <button class="tool-button" onclick="fakeFeature('Homework Help')">
+      <div class="tool-icon">💡</div>
+      Homework Help
+    </button>
+  </main>
+
+  <footer>
+    <input type="text" id="urlInput" placeholder="Enter URL (e.g., https://example.com)" size="40">
+    <br>
+    <button onclick="goToURL()">Go</button>
+    <button onclick="resetInput()">Reset</button>
+    <button onclick="loadPrevious()">Previous URL</button>
+  </footer>
+
+  <!-- Signature -->
+  <div id="signature">
+    WEBSITE MADE BY XANDER GAMA
+  </div>
+
+  <script>
+    // Password check
+    function checkPassword() {
+      const input = document.getElementById('passwordInput').value;
+      if (input === '1111') {
+        document.getElementById('loginOverlay').style.display = 'none';
+      } else {
+        alert('Incorrect password.');
+      }
+    }
+
+    // URL history and actions
+    let history = JSON.parse(localStorage.getItem('urlHistory')) || [];
+    let historyIndex = history.length;
+
+    function goToURL() {
+      const urlField = document.getElementById('urlInput');
+      const url = urlField.value.trim();
+
+      if (!url.startsWith("http://") && !url.startsWith("https://")) {
+        alert("Please include http:// or https:// in the URL");
+        return;
+      }
+
+      history.push(url);
+      localStorage.setItem('urlHistory', JSON.stringify(history));
+      historyIndex = history.length;
+
+      window.open(url, '_blank');
+    }
+
+    function resetInput() {
+      document.getElementById('urlInput').value = '';
+    }
+
+    function loadPrevious() {
+      if (historyIndex > 0) {
+        historyIndex--;
+        document.getElementById('urlInput').value = history[historyIndex];
+      } else {
+        alert("No more previous URLs");
+      }
+    }
+
+    function fakeFeature(name) {
+      alert(name + " are temporarily unavailable. Please check back later!");
+    }
+  </script>
+</body>
+</html>
